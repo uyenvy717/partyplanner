@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:partyplanflutter/widgets/events_detail_widget.dart';
 
 import '../../widgets/events_card_widget.dart';
 
@@ -25,7 +26,15 @@ class _UpcommingPartyState extends State<UpcommingParty> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                EventsCard(),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (BuildContext context) {
+                      return const EventsDetail();
+                    }));
+                  },
+                  child: const EventsCard(),
+                ),
               ],
             ),
           ),

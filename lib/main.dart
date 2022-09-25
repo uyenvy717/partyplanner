@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:partyplanflutter/expired_party.dart';
 import 'package:partyplanflutter/upcomming_party.dart';
+import 'package:partyplanflutter/widgets/events_edit_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,13 +40,17 @@ class _RootpageState extends State<Rootpage> {
       body: pages[currentPage],
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          debugPrint('Floating Action Button');
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (BuildContext context) {
+            return const EventsEdit();
+          }));
         },
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: NavigationBar(
         destinations: const [
-          NavigationDestination(icon: Icon(Icons.access_alarm), label: 'Upcomming'),
+          NavigationDestination(
+              icon: Icon(Icons.access_alarm), label: 'Upcomming'),
           NavigationDestination(icon: Icon(Icons.alarm_off), label: 'Expired')
         ],
         onDestinationSelected: (int index) {

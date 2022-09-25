@@ -1,7 +1,5 @@
-import 'dart:js';
-
 import 'package:flutter/material.dart';
-import 'package:partyplanflutter/widgets/events_detail_widget.dart';
+import 'package:partyplanflutter/widgets/events_edit_widget.dart';
 
 class EventsCard extends StatefulWidget {
   const EventsCard({super.key});
@@ -13,7 +11,7 @@ class EventsCard extends StatefulWidget {
 class _EventsCardState extends State<EventsCard> {
   @override
   Widget build(BuildContext context) {
-    List AvaImages = ['images/ava.jpeg', 'images/ava.jpeg', 'images/ava.jpeg'];
+    List avaImages = ['images/ava.jpeg', 'images/ava.jpeg', 'images/ava.jpeg'];
 
     return Container(
       margin: const EdgeInsets.all(5),
@@ -56,7 +54,7 @@ class _EventsCardState extends State<EventsCard> {
                       Expanded(
                         child: Row(
                           children: [
-                            for (int i = 0; i < AvaImages.length; i++)
+                            for (int i = 0; i < avaImages.length; i++)
                               Align(
                                 widthFactor: 0.5,
                                 child: CircleAvatar(
@@ -65,7 +63,7 @@ class _EventsCardState extends State<EventsCard> {
                                   child: CircleAvatar(
                                       radius: 25,
                                       backgroundImage:
-                                          AssetImage(AvaImages[i])),
+                                          AssetImage(avaImages[i])),
                                 ),
                               ),
                           ],
@@ -124,7 +122,7 @@ class _EventsCardState extends State<EventsCard> {
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) {
-                              return const EventsDetail();
+                              return const EventsEdit();
                             }));
                           },
                           child: const Text('Edit'),
