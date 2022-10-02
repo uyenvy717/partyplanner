@@ -15,7 +15,7 @@ class _EventsCardState extends State<EventsCard> {
 
     return Container(
       margin: const EdgeInsets.all(5),
-      height: 300,
+      height: 270,
       decoration: BoxDecoration(
         color: const Color(0xffFFFFFF),
         borderRadius: BorderRadius.circular(17),
@@ -36,7 +36,7 @@ class _EventsCardState extends State<EventsCard> {
                   image: AssetImage('images/colors.jpg'), fit: BoxFit.cover),
               borderRadius: BorderRadius.circular(10),
             ),
-            height: 200,
+            height: 170,
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -44,93 +44,96 @@ class _EventsCardState extends State<EventsCard> {
               color: Colors.white.withOpacity(0),
               height: 150,
               padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Expanded(
-                        child: Row(
-                          children: [
-                            for (int i = 0; i < avaImages.length; i++)
-                              Align(
-                                widthFactor: 0.5,
-                                child: CircleAvatar(
-                                  radius: 30,
-                                  backgroundColor: Colors.white,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              for (int i = 0; i < avaImages.length; i++)
+                                Align(
+                                  widthFactor: 0.5,
                                   child: CircleAvatar(
-                                      radius: 25,
-                                      backgroundImage:
-                                          AssetImage(avaImages[i])),
+                                    radius: 30,
+                                    backgroundColor: Colors.white,
+                                    child: CircleAvatar(
+                                        radius: 25,
+                                        backgroundImage:
+                                            AssetImage(avaImages[i])),
+                                  ),
                                 ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: 100,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: const Color(0xffFFFFFF),
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color:
+                                    const Color(0x000602d3).withOpacity(0.15),
+                                spreadRadius: 0.1,
+                                blurRadius: 2,
+                                offset: const Offset(0, 0),
                               ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: 100,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: const Color(0xffFFFFFF),
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0x000602d3).withOpacity(0.15),
-                              spreadRadius: 0.1,
-                              blurRadius: 2,
-                              offset: const Offset(0, 0),
-                            ),
-                          ],
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'Date: ',
-                            style: TextStyle(
-                              fontSize: 15,
+                            ],
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'Date: ',
+                              style: TextStyle(
+                                fontSize: 15,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [Text('Name'), Text('Location')],
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        const SizedBox(
+                          width: 10,
                         ),
-                      ),
-                      Container(
-                        width: 100,
-                        alignment: Alignment.center,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[400],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                            ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [Text('Name'), Text('Location')],
                           ),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) {
-                              return const EventsEdit();
-                            }));
-                          },
-                          child: const Text('Edit'),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        Container(
+                          width: 100,
+                          alignment: Alignment.center,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey[400],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                return const EventsEdit();
+                              }));
+                            },
+                            child: const Text('Edit'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

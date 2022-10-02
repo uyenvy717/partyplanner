@@ -17,12 +17,10 @@ class _UpcommingPartyState extends State<UpcommingParty> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black12.withOpacity(0.03),
-      body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          // height: double.infinity,
-          // width: double.infinity,
-          child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
