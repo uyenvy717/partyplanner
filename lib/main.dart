@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:partyplanflutter/expired_party.dart';
+import 'package:partyplanflutter/route/route_generator.dart';
 import 'package:partyplanflutter/upcomming_party.dart';
 import 'package:partyplanflutter/widgets/events_edit_widget.dart';
 
@@ -14,7 +15,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.grey),
+      theme: ThemeData(
+        primarySwatch: Colors.grey,
+      ),
+      // initialRoute: '/',
+      onGenerateRoute: RouteGenerator.generateRoute,
       home: const Rootpage(),
     );
   }
@@ -38,20 +43,27 @@ class _RootpageState extends State<Rootpage> {
         toolbarHeight: 100,
       ),
       body: pages[currentPage],
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (BuildContext context) {
-            return const EventsEdit();
-          }));
+          // Navigator.of(context)
+          //     .push(MaterialPageRoute(builder: (BuildContext context) {
+          //   return const EventsEdit();
+          // }));
+          Navigator.pushNamed(context, '/add_party');
         },
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: const Text(''),
       ),
       bottomNavigationBar: NavigationBar(
         destinations: const [
           NavigationDestination(
-              icon: Icon(Icons.access_alarm), label: 'Upcomming'),
-          NavigationDestination(icon: Icon(Icons.alarm_off), label: 'Expired')
+            icon: Icon(Icons.access_alarm),
+            label: 'Upcomming',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.alarm_off),
+            label: 'Expired',
+          ),
         ],
         onDestinationSelected: (int index) {
           setState(() {
