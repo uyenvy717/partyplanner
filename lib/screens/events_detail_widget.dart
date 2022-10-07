@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:partyplanflutter/data/db/app_db.dart';
 
 class EventsDetail extends StatefulWidget {
-  const EventsDetail({super.key});
+  final int id;
+  const EventsDetail({required this.id, Key? key}) : super(key: key);
 
   @override
   State<EventsDetail> createState() => _EventsDetailState();
@@ -9,6 +11,27 @@ class EventsDetail extends StatefulWidget {
 
 class _EventsDetailState extends State<EventsDetail> {
   List avaImages = ['images/ava.jpeg', 'images/ava.jpeg', 'images/ava.jpeg'];
+
+  late AppDb _db;
+  late PartyData _partyData;
+
+  final TextEditingController _nameController = TextEditingController();
+  // String test = '', test2 = '', test3 = '', test4 = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _db = AppDb();
+    getParty();
+  }
+
+  @override
+  void dispose() {
+    _db.close();
+    _nameController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +44,10 @@ class _EventsDetailState extends State<EventsDetail> {
                 toolbarHeight: 200,
                 flexibleSpace: Container(
                   decoration: const BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage('images/colors.jpg'),
-                          fit: BoxFit.cover)),
+                    image: DecorationImage(
+                        image: AssetImage('images/colors.jpg'),
+                        fit: BoxFit.cover),
+                  ),
                 ),
               ),
               body: Padding(
@@ -31,11 +55,12 @@ class _EventsDetailState extends State<EventsDetail> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(top: 25.0, bottom: 5),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 25.0, bottom: 5),
                       child: Text(
-                        'Name',
-                        style: TextStyle(
+                        // _partyData.partyName,
+                        _nameController.text,
+                        style: const TextStyle(
                           color: Colors.black87,
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
@@ -115,13 +140,15 @@ class _EventsDetailState extends State<EventsDetail> {
                         ),
                       ),
                     ),
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum umquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit, tenetur error, harum nesciunt ipsum debitis quas aliquid.'),
+                        style: const TextStyle(
+                          fontSize: 12,
+                        ),
+                        // _partyData.desc,
+                        _nameController.text,
+                      ),
                     ),
                     const Padding(
                       padding: EdgeInsets.only(top: 8.0, bottom: 2),
@@ -134,14 +161,15 @@ class _EventsDetailState extends State<EventsDetail> {
                       ),
                     ),
                     Row(
-                      children: const [
-                        Icon(Icons.location_pin),
-                        SizedBox(
+                      children: [
+                        const Icon(Icons.location_pin),
+                        const SizedBox(
                           width: 5,
                         ),
                         Text(
-                          'Specific address',
-                          style: TextStyle(
+                          // _partyData.location,
+                          _nameController.text,
+                          style: const TextStyle(
                             fontSize: 12,
                           ),
                         ),
@@ -183,10 +211,11 @@ class _EventsDetailState extends State<EventsDetail> {
                               ),
                             ],
                           ),
-                          child: const Center(
+                          child: Center(
                             child: Text(
-                              'Date: ',
-                              style: TextStyle(
+                              // _partyData.date.toIso8601String(),
+                              _nameController.text,
+                              style: const TextStyle(
                                 color: Colors.black87,
                                 fontSize: 15,
                               ),
@@ -206,5 +235,14 @@ class _EventsDetailState extends State<EventsDetail> {
         ),
       ),
     );
+  }
+
+  Future<void> getParty() async {
+    _partyData = await _db.getParty(widget.id);
+    // test = _partyData.partyName;
+    // test2 = _partyData.desc;
+    // test3 = _partyData.location;
+    // test4 = _partyData.date.toIso8601String();
+    _nameController.text = _partyData.partyName;
   }
 }

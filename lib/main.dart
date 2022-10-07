@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:partyplanflutter/expired_party.dart';
 import 'package:partyplanflutter/route/route_generator.dart';
-import 'package:partyplanflutter/upcomming_party.dart';
-import 'package:partyplanflutter/widgets/events_edit_widget.dart';
+import 'package:partyplanflutter/screens/expired_party.dart';
+import 'package:partyplanflutter/screens/upcomming_party.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,6 +34,7 @@ class Rootpage extends StatefulWidget {
 class _RootpageState extends State<Rootpage> {
   int currentPage = 0;
   List<Widget> pages = const [UpcommingParty(), ExpiredParty()];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,10 +45,6 @@ class _RootpageState extends State<Rootpage> {
       body: pages[currentPage],
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Navigator.of(context)
-          //     .push(MaterialPageRoute(builder: (BuildContext context) {
-          //   return const EventsEdit();
-          // }));
           Navigator.pushNamed(context, '/add_party');
         },
         icon: const Icon(Icons.add),

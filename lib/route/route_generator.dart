@@ -1,16 +1,39 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:partyplanflutter/main.dart';
-import 'package:partyplanflutter/upcomming_party.dart';
-import 'package:partyplanflutter/widgets/events_edit_widget.dart';
+import 'package:partyplanflutter/screens/contact_list.dart';
+import 'package:partyplanflutter/screens/events_add_widget.dart';
+import 'package:partyplanflutter/screens/events_edit_widget.dart';
+import 'package:partyplanflutter/screens/upcomming_party.dart';
+import 'package:partyplanflutter/screens/events_detail_widget.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    final args = settings.arguments;
+
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => const UpcommingParty());
+      case '/party_detail':
+        if (args is int) {
+          return MaterialPageRoute(
+            builder: (_) => EventsDetail(
+              id: args,
+            ),
+          );
+        }
+        return _errorRoute();
       case '/add_party':
-        return MaterialPageRoute(builder: (_) => const EventsEdit());
+        return MaterialPageRoute(builder: (_) => const EventsAdd());
+      case '/edit_party':
+        if (args is int) {
+          return MaterialPageRoute(
+            builder: (_) => EventsEdit(
+              id: args,
+            ),
+          );
+        }
+        return _errorRoute();
+      // case '/contact_list':
+      //   return MaterialPageRoute(builder: (_) => const ContactList());
       default:
         return _errorRoute();
     }

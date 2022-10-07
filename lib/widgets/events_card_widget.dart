@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:partyplanflutter/widgets/events_edit_widget.dart';
 
 class EventsCard extends StatefulWidget {
-  const EventsCard({super.key});
+  final String name;
+  final String location;
+  final String date;
+  final int id;
+
+  const EventsCard({
+    Key? key,
+    required this.name,
+    required this.location,
+    required this.date,
+    required this.id,
+  }) : super(key: key);
 
   @override
   State<EventsCard> createState() => _EventsCardState();
@@ -86,10 +96,10 @@ class _EventsCardState extends State<EventsCard> {
                               ),
                             ],
                           ),
-                          child: const Center(
+                          child: Center(
                             child: Text(
-                              'Date: ',
-                              style: TextStyle(
+                              widget.date,
+                              style: const TextStyle(
                                 fontSize: 15,
                               ),
                             ),
@@ -108,7 +118,10 @@ class _EventsCardState extends State<EventsCard> {
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [Text('Name'), Text('Location')],
+                            children: [
+                              Text(widget.name),
+                              Text(widget.location),
+                            ],
                           ),
                         ),
                         Container(
@@ -122,10 +135,8 @@ class _EventsCardState extends State<EventsCard> {
                               ),
                             ),
                             onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                return const EventsEdit();
-                              }));
+                              Navigator.pushNamed(context, '/edit_party',
+                                  arguments: widget.id);
                             },
                             child: const Text('Edit'),
                           ),

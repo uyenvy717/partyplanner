@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:partyplanflutter/widgets/events_detail_widget.dart';
 
 import '../../widgets/events_card_widget.dart';
 
@@ -26,12 +25,17 @@ class _UpcommingPartyState extends State<UpcommingParty> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (BuildContext context) {
-                      return const EventsDetail();
-                    }));
+                    // Navigator.of(context).push(
+                    //     MaterialPageRoute(builder: (BuildContext context) {
+                    //   return const EventsDetail();
+                    // }));
                   },
-                  child: const EventsCard(),
+                  child: const EventsCard(
+                    name: 'Bookshop',
+                    location: 'Book store',
+                    date: '12/05/2022',
+                    id: 1,
+                  ),
                 ),
               ],
             ),
