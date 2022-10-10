@@ -104,12 +104,12 @@ class _EventsEditState extends State<EventsEdit> {
                   const SizedBox(
                     height: 8,
                   ),
-                  // IconButton(
-                  //   onPressed: () {
-                  //     Navigator.pushNamed(context, '/contact_list');
-                  //   },
-                  //   icon: const Icon(Icons.outgoing_mail),
-                  // ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/contact_list');
+                    },
+                    icon: const Icon(Icons.outgoing_mail),
+                  ),
                 ],
               ),
             ),

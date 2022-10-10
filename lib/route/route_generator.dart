@@ -32,8 +32,8 @@ class RouteGenerator {
           );
         }
         return _errorRoute();
-      // case '/contact_list':
-      //   return MaterialPageRoute(builder: (_) => const ContactList());
+      case '/contact_list':
+        return MaterialPageRoute(builder: (_) => const ContactList());
       default:
         return _errorRoute();
     }
