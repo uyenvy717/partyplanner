@@ -44,6 +44,9 @@ dependencies:
   intl: ^0.17.0
   fast_contacts: ^1.1.1
   permission_handler: ^10.1.0
+  gap: ^2.0.0
+  get:
+  add_2_calendar: ^2.1.2
 
 dev_dependencies:
   flutter_test:

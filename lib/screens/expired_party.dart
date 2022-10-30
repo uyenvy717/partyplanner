@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:partyplanflutter/data/db/app_db.dart';
 import 'package:partyplanflutter/widgets/events_card_widget.dart';
+import '../utils/app_layout.dart';
 
 class ExpiredParty extends StatefulWidget {
   const ExpiredParty({super.key});
@@ -15,7 +18,6 @@ class _ExpiredPartyState extends State<ExpiredParty> {
   @override
   void initState() {
     super.initState();
-
     _db = AppDb();
   }
 
@@ -52,23 +54,24 @@ class _ExpiredPartyState extends State<ExpiredParty> {
               itemBuilder: (context, index) {
                 final party = parties[index];
                 return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: AppLayout.getWidth(20)),
                   child: Column(
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, '/party_detail', arguments: party.id);
+                          Navigator.pushNamed(context, '/party_detail',
+                              arguments: party.id);
                         },
                         child: EventsCard(
                           name: party.partyName.toString(),
                           location: party.location.toString(),
-                          date: party.date.toString(),
+                          date: DateFormat('MMM d').format(party.date),
+                          time: DateFormat('h:mm a').format(party.date),
                           id: party.id,
                         ),
                       ),
-                      const SizedBox(
-                        height: 8.0,
-                      ),
+                      Gap(AppLayout.getHeight(8)),
                     ],
                   ),
                 );

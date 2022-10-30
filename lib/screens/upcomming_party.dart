@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../widgets/events_card_widget.dart';
+import '../utils/app_layout.dart';
 
 class UpcommingParty extends StatefulWidget {
   const UpcommingParty({super.key});
@@ -19,7 +20,7 @@ class _UpcommingPartyState extends State<UpcommingParty> {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: AppLayout.getWidth(30)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -34,6 +35,7 @@ class _UpcommingPartyState extends State<UpcommingParty> {
                     name: 'Bookshop',
                     location: 'Book store',
                     date: '12/05/2022',
+                    time: '',
                     id: 1,
                   ),
                 ),

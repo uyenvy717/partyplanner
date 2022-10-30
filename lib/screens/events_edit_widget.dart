@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:partyplanflutter/data/db/app_db.dart';
+import 'package:partyplanflutter/utils/app_layout.dart';
 import 'package:partyplanflutter/widgets/custom_date_picker_form_field.dart';
 import 'package:partyplanflutter/widgets/custom_text_form_field.dart';
 import 'package:drift/drift.dart' as drift;
@@ -28,7 +30,6 @@ class _EventsEditState extends State<EventsEdit> {
   @override
   void initState() {
     super.initState();
-
     _db = AppDb();
     getParty();
   }
@@ -52,20 +53,20 @@ class _EventsEditState extends State<EventsEdit> {
         actions: [
           IconButton(
             onPressed: () {
-              editParty();
+              editParty(context);
             },
             icon: const Icon(Icons.save),
           ),
           IconButton(
             onPressed: () {
-              deleteParty();
+              deleteParty(context);
             },
             icon: const Icon(Icons.delete),
           )
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(AppLayout.getWidth(8)),
         child: Column(
           children: [
             Form(
@@ -77,33 +78,25 @@ class _EventsEditState extends State<EventsEdit> {
                     controller: _nameController,
                     txtLabel: 'Party name',
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
+                  Gap(AppLayout.getHeight(8)),
                   CustomTextFormField(
                     controller: _descController,
                     txtLabel: 'Description',
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
+                  Gap(AppLayout.getHeight(8)),
                   CustomTextFormField(
                     controller: _locationController,
                     txtLabel: 'Location',
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
+                  Gap(AppLayout.getHeight(8)),
                   CustomDatePickerFormField(
                     controller: _dateController,
                     txtLabel: 'Date',
                     callback: (() {
-                      pickDate(context);
+                      pickDateTime(context);
                     }),
                   ),
-                  const SizedBox(
-                    height: 8,
-                  ),
+                  Gap(AppLayout.getHeight(8)),
                   IconButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/contact_list');
@@ -119,38 +112,60 @@ class _EventsEditState extends State<EventsEdit> {
     );
   }
 
-  Future<void> pickDate(BuildContext context) async {
-    final initialDate = DateTime.now();
-    final newDate = await showDatePicker(
-      context: context,
-      initialDate: _date ?? initialDate,
-      firstDate: DateTime(DateTime.now().year - 100),
-      lastDate: DateTime(DateTime.now().year + 1),
-      builder: (context, child) => Theme(
-        data: ThemeData().copyWith(
-          colorScheme: const ColorScheme.light(
-            primary: Colors.pink,
-            onPrimary: Colors.white,
-            onSurface: Colors.black,
-          ),
-          dialogBackgroundColor: Colors.white,
-        ),
-        child: child ?? const Text(''),
-      ),
-    );
+  Future pickDateTime(BuildContext context) async {
+    DateTime? date = await pickDate(context);
+    if (date == null) return;
 
-    if (newDate == null) {
-      return;
-    }
+    // ignore: use_build_context_synchronously
+    TimeOfDay? time = await pickTime(context);
+    if (time == null) return;
+
+    final dateTime =
+        DateTime(date.year, date.month, date.day, time.hour, time.minute);
 
     setState(() {
-      _date = newDate;
-      String date = DateFormat('dd/MM/yyyy').format(newDate);
-      _dateController.text = date;
+      _date = dateTime;
+      String newDateTime = DateFormat('dd/MM/yyyy HH:mm').format(dateTime);
+      _dateController.text = newDateTime;
     });
   }
 
-  void editParty() {
+  Future<DateTime?> pickDate(BuildContext context) => showDatePicker(
+        context: context,
+        initialDate: _date ?? DateTime.now(),
+        firstDate: DateTime(DateTime.now().year - 100),
+        lastDate: DateTime(DateTime.now().year + 1),
+        builder: (context, child) => Theme(
+          data: ThemeData().copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color.fromARGB(255, 18, 106, 125),
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: child ?? const Text(''),
+        ),
+      );
+
+  Future<TimeOfDay?> pickTime(BuildContext context) => showTimePicker(
+        context: context,
+        initialTime:
+            TimeOfDay(hour: DateTime.now().hour, minute: DateTime.now().minute),
+        builder: (context, child) => Theme(
+          data: ThemeData().copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color.fromARGB(255, 18, 106, 125),
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            dialogBackgroundColor: Colors.white,
+          ),
+          child: child ?? const Text(''),
+        ),
+      );
+
+  void editParty(BuildContext context) {
     final isValid = _formKey.currentState?.validate();
 
     if (isValid != null && isValid) {
@@ -190,7 +205,7 @@ class _EventsEditState extends State<EventsEdit> {
     }
   }
 
-  void deleteParty() {
+  void deleteParty(BuildContext context) {
     _db.deleteParty(widget.id).then(
           (value) => ScaffoldMessenger.of(context).showMaterialBanner(
             MaterialBanner(
@@ -223,6 +238,7 @@ class _EventsEditState extends State<EventsEdit> {
     _nameController.text = _partyData.partyName;
     _descController.text = _partyData.desc;
     _locationController.text = _partyData.location;
-    _dateController.text = _partyData.date.toIso8601String();
+    _dateController.text =
+        DateFormat('dd/MM/yyyy HH:mm').format(_partyData.date);
   }
 }

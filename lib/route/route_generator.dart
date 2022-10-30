@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:partyplanflutter/screens/contact_list.dart';
 import 'package:partyplanflutter/screens/events_add_widget.dart';
+import 'package:partyplanflutter/screens/events_detail.dart';
 import 'package:partyplanflutter/screens/events_edit_widget.dart';
 import 'package:partyplanflutter/screens/upcomming_party.dart';
-import 'package:partyplanflutter/screens/events_detail_widget.dart';
+import 'package:partyplanflutter/screens/events_detail.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
