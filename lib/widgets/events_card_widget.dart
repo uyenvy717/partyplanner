@@ -29,7 +29,7 @@ class _EventsCardState extends State<EventsCard> {
 
     return Container(
       margin: const EdgeInsets.all(5),
-      width: AppLayout.getSize(context).width * 0.8,
+      width: AppLayout.getSize(context).width * 0.95,
       height: AppLayout.getHeight(250),
       decoration: BoxDecoration(
         color: const Color(0xffFFFFFF),
@@ -58,7 +58,7 @@ class _EventsCardState extends State<EventsCard> {
           */
           Positioned(
             height: AppLayout.getHeight(200),
-            width: AppLayout.getWidth(300),
+            width: AppLayout.getWidth(360),
             top: AppLayout.getHeight(100),
             child: Container(
               color: Colors.white.withOpacity(0),
@@ -68,7 +68,7 @@ class _EventsCardState extends State<EventsCard> {
                 children: [
                   Row(
                     children: [
-                      Gap(AppLayout.getWidth(5)),
+                      Gap(AppLayout.getWidth(8)),
                       Expanded(
                         child: Row(
                           children: [

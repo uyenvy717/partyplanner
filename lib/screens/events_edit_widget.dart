@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:partyplanflutter/data/db/app_db.dart';
+import 'package:partyplanflutter/screens/contact_list.dart';
 import 'package:partyplanflutter/utils/app_layout.dart';
 import 'package:partyplanflutter/widgets/custom_date_picker_form_field.dart';
 import 'package:partyplanflutter/widgets/custom_text_form_field.dart';
@@ -25,6 +26,7 @@ class _EventsEditState extends State<EventsEdit> {
   final TextEditingController _descController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
+  List<ContactDetail> contacts = [];
   DateTime? _date;
 
   @override
@@ -37,10 +39,6 @@ class _EventsEditState extends State<EventsEdit> {
   @override
   void dispose() {
     _db.close();
-    _nameController.dispose();
-    _descController.dispose();
-    _locationController.dispose();
-    _dateController.dispose();
     super.dispose();
   }
 
@@ -57,56 +55,86 @@ class _EventsEditState extends State<EventsEdit> {
             },
             icon: const Icon(Icons.save),
           ),
-          IconButton(
-            onPressed: () {
-              deleteParty(context);
-            },
-            icon: const Icon(Icons.delete),
-          )
         ],
       ),
       body: Padding(
         padding: EdgeInsets.all(AppLayout.getWidth(8)),
-        child: Column(
-          children: [
-            Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomTextFormField(
-                    controller: _nameController,
-                    txtLabel: 'Party name',
-                  ),
-                  Gap(AppLayout.getHeight(8)),
-                  CustomTextFormField(
-                    controller: _descController,
-                    txtLabel: 'Description',
-                  ),
-                  Gap(AppLayout.getHeight(8)),
-                  CustomTextFormField(
-                    controller: _locationController,
-                    txtLabel: 'Location',
-                  ),
-                  Gap(AppLayout.getHeight(8)),
-                  CustomDatePickerFormField(
-                    controller: _dateController,
-                    txtLabel: 'Date',
-                    callback: (() {
-                      pickDateTime(context);
-                    }),
-                  ),
-                  Gap(AppLayout.getHeight(8)),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/contact_list');
-                    },
-                    icon: const Icon(Icons.outgoing_mail),
-                  ),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomTextFormField(
+                      controller: _nameController,
+                      txtLabel: 'Party name',
+                    ),
+                    Gap(AppLayout.getHeight(8)),
+                    CustomTextFormField(
+                      controller: _descController,
+                      txtLabel: 'Description',
+                    ),
+                    Gap(AppLayout.getHeight(8)),
+                    CustomTextFormField(
+                      controller: _locationController,
+                      txtLabel: 'Location',
+                    ),
+                    Gap(AppLayout.getHeight(8)),
+                    CustomDatePickerFormField(
+                      controller: _dateController,
+                      txtLabel: 'Date',
+                      callback: (() {
+                        pickDateTime(context);
+                      }),
+                    ),
+                    Gap(AppLayout.getHeight(8)),
+                    IconButton(
+                      onPressed: () {
+                        // Navigator.pushNamed(context, '/contact_list', arguments: );
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ContactList(
+                                    contacts: contacts,
+                                    id: widget.id,
+                                    updateContact:
+                                        (List<ContactDetail> newContacts) {
+                                      updateContacts(newContacts);
+                                    })));
+                      },
+                      icon: const Icon(Icons.outgoing_mail),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: contacts.length,
+                itemBuilder: (context, index) {
+                  final contact = contacts[index];
+                  return Column(children: [
+                    ListTile(
+                      leading: const CircleAvatar(
+                        radius: 20,
+                        child: Icon(Icons.person),
+                      ),
+                      title: Text(contact.name),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(contact.phoneNumber),
+                        ],
+                      ),
+                    ),
+                    const Divider()
+                  ]);
+                },
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -174,63 +202,14 @@ class _EventsEditState extends State<EventsEdit> {
         partyName: drift.Value(_nameController.text),
         desc: drift.Value(_descController.text),
         location: drift.Value(_locationController.text),
-        date: drift.Value(_date!),
+        date: drift.Value(
+            DateFormat('dd/MM/yyyy HH:mm').parse(_dateController.text)),
       );
 
-      _db.updateParty(entity).then(
-            (value) => ScaffoldMessenger.of(context).showMaterialBanner(
-              MaterialBanner(
-                backgroundColor: Colors.deepOrange,
-                content: Text(
-                  'Party updated: $value',
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => ScaffoldMessenger.of(context)
-                        .hideCurrentMaterialBanner(),
-                    child: const Text(
-                      'Close',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          );
+      _db
+          .updateParty(entity)
+          .then((value) => {Navigator.pushNamed(context, '/')});
     }
-  }
-
-  void deleteParty(BuildContext context) {
-    _db.deleteParty(widget.id).then(
-          (value) => ScaffoldMessenger.of(context).showMaterialBanner(
-            MaterialBanner(
-              backgroundColor: Colors.deepOrange,
-              content: Text(
-                'Party deleted: $value',
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () =>
-                      ScaffoldMessenger.of(context).hideCurrentMaterialBanner(),
-                  child: const Text(
-                    'Close',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
   }
 
   Future<void> getParty() async {
@@ -240,5 +219,12 @@ class _EventsEditState extends State<EventsEdit> {
     _locationController.text = _partyData.location;
     _dateController.text =
         DateFormat('dd/MM/yyyy HH:mm').format(_partyData.date);
+  }
+
+  void updateContacts(List<ContactDetail> newContacts) {
+    setState(() {
+      contacts = newContacts;
+    });
+    // print(contacts);
   }
 }

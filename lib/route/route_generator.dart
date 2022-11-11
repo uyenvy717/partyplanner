@@ -3,8 +3,8 @@ import 'package:partyplanflutter/screens/contact_list.dart';
 import 'package:partyplanflutter/screens/events_add_widget.dart';
 import 'package:partyplanflutter/screens/events_detail.dart';
 import 'package:partyplanflutter/screens/events_edit_widget.dart';
+import 'package:partyplanflutter/screens/expired_party.dart';
 import 'package:partyplanflutter/screens/upcomming_party.dart';
-import 'package:partyplanflutter/screens/events_detail.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -12,7 +12,7 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => const UpcommingParty());
+        return MaterialPageRoute(builder: (_) => const ExpiredParty());
       case '/party_detail':
         if (args is int) {
           return MaterialPageRoute(
@@ -33,8 +33,8 @@ class RouteGenerator {
           );
         }
         return _errorRoute();
-      case '/contact_list':
-        return MaterialPageRoute(builder: (_) => const ContactList());
+      // case '/contact_list':
+      //   return MaterialPageRoute(builder: (_) => const ContactList());
       default:
         return _errorRoute();
     }

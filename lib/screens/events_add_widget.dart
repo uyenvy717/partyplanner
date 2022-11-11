@@ -179,6 +179,11 @@ class _EventsAddState extends State<EventsAdd> {
       );
 
       Add2Calendar.addEvent2Cal(event);
+
+      Navigator.pushNamed(
+        context,
+        '/',
+      );
     }
   }
 }

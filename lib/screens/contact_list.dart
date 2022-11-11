@@ -3,7 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ContactList extends StatefulWidget {
-  const ContactList({super.key});
+  const ContactList({
+    required this.contacts,
+    required this.id,
+    required this.updateContact,
+    Key? key,
+  }) : super(key: key);
+
+  final List<ContactDetail> contacts;
+  final int id;
+  final Function updateContact;
 
   @override
   State<ContactList> createState() => _ContactListState();
@@ -12,47 +21,83 @@ class ContactList extends StatefulWidget {
 class _ContactListState extends State<ContactList> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey[100],
-      height: double.infinity,
-      child: FutureBuilder(
-        future: getContacts(),
-        builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.data == null) {
-            return const Center(
-              child: SizedBox(
-                height: 50,
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-
-          return ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (context, index) {
-                Contact contact = snapshot.data[index];
-                return ListTile(
-                  title: Text(contact.displayName),
-                  subtitle: Column(children: [
-                    Text(contact.phones[0]),
-                    Text(contact.emails[0]),
-                  ]),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Select Participant'),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/edit_party',
+                    arguments: widget.id);
+              },
+              icon: const Icon(Icons.save),
+            ),
+          ],
+        ),
+        body: SizedBox(
+          height: double.infinity,
+          child: FutureBuilder(
+            future: getContacts(),
+            builder: (context, AsyncSnapshot snapshot) {
+              if (snapshot.data == null) {
+                return const Center(
+                  child:
+                      SizedBox(height: 50, child: CircularProgressIndicator()),
                 );
-              });
-        },
+              }
+              return ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index) {
+                    Contact contact = snapshot.data[index];
+                    return Column(children: [
+                      ListTile(
+                        leading: const CircleAvatar(
+                          radius: 20,
+                          child: Icon(Icons.person),
+                        ),
+                        title: Text(contact.displayName),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(contact.phones[0]),
+                          ],
+                        ),
+                        onTap: (() {
+                          ContactDetail data = ContactDetail(
+                              contact.displayName, contact.phones[0]);
+                          widget.contacts.add(data);
+
+                          widget.updateContact(widget.contacts);
+                        }),
+                      ),
+                      const Divider()
+                    ]);
+                  });
+            },
+          ),
+        ),
       ),
     );
   }
 
   Future<List<Contact>> getContacts() async {
     bool isGranted = await Permission.contacts.status.isGranted;
-
     if (!isGranted) {
-      await Permission.contacts.request().isGranted;
+      isGranted = await Permission.contacts.request().isGranted;
     }
     if (isGranted) {
       return await FastContacts.allContacts;
     }
     return [];
   }
+}
+
+class ContactDetail {
+  final String name;
+  final String phoneNumber;
+
+  const ContactDetail(this.name, this.phoneNumber);
 }
