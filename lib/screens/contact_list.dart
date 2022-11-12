@@ -1,5 +1,6 @@
 import 'package:fast_contacts/fast_contacts.dart';
 import 'package:flutter/material.dart';
+import 'package:partyplanflutter/data/db/app_db.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ContactList extends StatefulWidget {
@@ -93,11 +94,4 @@ class _ContactListState extends State<ContactList> {
     }
     return [];
   }
-}
-
-class ContactDetail {
-  final String name;
-  final String phoneNumber;
-
-  const ContactDetail(this.name, this.phoneNumber);
 }

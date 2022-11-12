@@ -13,12 +13,14 @@ class PartyData extends DataClass implements Insertable<PartyData> {
   final String desc;
   final String location;
   final DateTime date;
+  final ContactDetail? contacts;
   const PartyData(
       {required this.id,
       required this.partyName,
       required this.desc,
       required this.location,
-      required this.date});
+      required this.date,
+      this.contacts});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -27,6 +29,10 @@ class PartyData extends DataClass implements Insertable<PartyData> {
     map['desc'] = Variable<String>(desc);
     map['location'] = Variable<String>(location);
     map['date'] = Variable<DateTime>(date);
+    if (!nullToAbsent || contacts != null) {
+      final converter = $PartyTable.$converter0n;
+      map['contacts'] = Variable<String>(converter.toSql(contacts));
+    }
     return map;
   }
 
@@ -37,6 +43,9 @@ class PartyData extends DataClass implements Insertable<PartyData> {
       desc: Value(desc),
       location: Value(location),
       date: Value(date),
+      contacts: contacts == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contacts),
     );
   }
 
@@ -49,6 +58,7 @@ class PartyData extends DataClass implements Insertable<PartyData> {
       desc: serializer.fromJson<String>(json['desc']),
       location: serializer.fromJson<String>(json['location']),
       date: serializer.fromJson<DateTime>(json['date']),
+      contacts: serializer.fromJson<ContactDetail?>(json['contacts']),
     );
   }
   @override
@@ -60,6 +70,7 @@ class PartyData extends DataClass implements Insertable<PartyData> {
       'desc': serializer.toJson<String>(desc),
       'location': serializer.toJson<String>(location),
       'date': serializer.toJson<DateTime>(date),
+      'contacts': serializer.toJson<ContactDetail?>(contacts),
     };
   }
 
@@ -68,13 +79,15 @@ class PartyData extends DataClass implements Insertable<PartyData> {
           String? partyName,
           String? desc,
           String? location,
-          DateTime? date}) =>
+          DateTime? date,
+          Value<ContactDetail?> contacts = const Value.absent()}) =>
       PartyData(
         id: id ?? this.id,
         partyName: partyName ?? this.partyName,
         desc: desc ?? this.desc,
         location: location ?? this.location,
         date: date ?? this.date,
+        contacts: contacts.present ? contacts.value : this.contacts,
       );
   @override
   String toString() {
@@ -83,13 +96,15 @@ class PartyData extends DataClass implements Insertable<PartyData> {
           ..write('partyName: $partyName, ')
           ..write('desc: $desc, ')
           ..write('location: $location, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('contacts: $contacts')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, partyName, desc, location, date);
+  int get hashCode =>
+      Object.hash(id, partyName, desc, location, date, contacts);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -98,7 +113,8 @@ class PartyData extends DataClass implements Insertable<PartyData> {
           other.partyName == this.partyName &&
           other.desc == this.desc &&
           other.location == this.location &&
-          other.date == this.date);
+          other.date == this.date &&
+          other.contacts == this.contacts);
 }
 
 class PartyCompanion extends UpdateCompanion<PartyData> {
@@ -107,12 +123,14 @@ class PartyCompanion extends UpdateCompanion<PartyData> {
   final Value<String> desc;
   final Value<String> location;
   final Value<DateTime> date;
+  final Value<ContactDetail?> contacts;
   const PartyCompanion({
     this.id = const Value.absent(),
     this.partyName = const Value.absent(),
     this.desc = const Value.absent(),
     this.location = const Value.absent(),
     this.date = const Value.absent(),
+    this.contacts = const Value.absent(),
   });
   PartyCompanion.insert({
     this.id = const Value.absent(),
@@ -120,6 +138,7 @@ class PartyCompanion extends UpdateCompanion<PartyData> {
     required String desc,
     required String location,
     required DateTime date,
+    this.contacts = const Value.absent(),
   })  : partyName = Value(partyName),
         desc = Value(desc),
         location = Value(location),
@@ -130,6 +149,7 @@ class PartyCompanion extends UpdateCompanion<PartyData> {
     Expression<String>? desc,
     Expression<String>? location,
     Expression<DateTime>? date,
+    Expression<String>? contacts,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -137,6 +157,7 @@ class PartyCompanion extends UpdateCompanion<PartyData> {
       if (desc != null) 'desc': desc,
       if (location != null) 'location': location,
       if (date != null) 'date': date,
+      if (contacts != null) 'contacts': contacts,
     });
   }
 
@@ -145,13 +166,15 @@ class PartyCompanion extends UpdateCompanion<PartyData> {
       Value<String>? partyName,
       Value<String>? desc,
       Value<String>? location,
-      Value<DateTime>? date}) {
+      Value<DateTime>? date,
+      Value<ContactDetail?>? contacts}) {
     return PartyCompanion(
       id: id ?? this.id,
       partyName: partyName ?? this.partyName,
       desc: desc ?? this.desc,
       location: location ?? this.location,
       date: date ?? this.date,
+      contacts: contacts ?? this.contacts,
     );
   }
 
@@ -173,6 +196,10 @@ class PartyCompanion extends UpdateCompanion<PartyData> {
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
     }
+    if (contacts.present) {
+      final converter = $PartyTable.$converter0n;
+      map['contacts'] = Variable<String>(converter.toSql(contacts.value));
+    }
     return map;
   }
 
@@ -183,7 +210,8 @@ class PartyCompanion extends UpdateCompanion<PartyData> {
           ..write('partyName: $partyName, ')
           ..write('desc: $desc, ')
           ..write('location: $location, ')
-          ..write('date: $date')
+          ..write('date: $date, ')
+          ..write('contacts: $contacts')
           ..write(')'))
         .toString();
   }
@@ -221,8 +249,15 @@ class $PartyTable extends Party with TableInfo<$PartyTable, PartyData> {
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
       'date', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  final VerificationMeta _contactsMeta = const VerificationMeta('contacts');
   @override
-  List<GeneratedColumn> get $columns => [id, partyName, desc, location, date];
+  late final GeneratedColumnWithTypeConverter<ContactDetail?, String> contacts =
+      GeneratedColumn<String>('contacts', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<ContactDetail?>($PartyTable.$converter0n);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, partyName, desc, location, date, contacts];
   @override
   String get aliasedName => _alias ?? 'party';
   @override
@@ -259,6 +294,7 @@ class $PartyTable extends Party with TableInfo<$PartyTable, PartyData> {
     } else if (isInserting) {
       context.missing(_dateMeta);
     }
+    context.handle(_contactsMeta, const VerificationResult.success());
     return context;
   }
 
@@ -278,6 +314,8 @@ class $PartyTable extends Party with TableInfo<$PartyTable, PartyData> {
           .read(DriftSqlType.string, data['${effectivePrefix}location'])!,
       date: attachedDatabase.options.types
           .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+      contacts: $PartyTable.$converter0n.fromSql(attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}contacts'])),
     );
   }
 
@@ -285,6 +323,11 @@ class $PartyTable extends Party with TableInfo<$PartyTable, PartyData> {
   $PartyTable createAlias(String alias) {
     return $PartyTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<ContactDetail, String> $converter0 =
+      const ContactConverter();
+  static TypeConverter<ContactDetail?, String?> $converter0n =
+      NullAwareTypeConverter.wrap($converter0);
 }
 
 abstract class _$AppDb extends GeneratedDatabase {
@@ -296,3 +339,19 @@ abstract class _$AppDb extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [party];
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+ContactDetail _$ContactDetailFromJson(Map<String, dynamic> json) =>
+    ContactDetail(
+      json['name'] as String,
+      json['phoneNumber'] as String,
+    );
+
+Map<String, dynamic> _$ContactDetailToJson(ContactDetail instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'phoneNumber': instance.phoneNumber,
+    };
