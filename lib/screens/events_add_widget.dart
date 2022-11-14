@@ -154,14 +154,17 @@ class _EventsAddState extends State<EventsAdd> {
 
   void addParty() {
     final isValid = _formKey.currentState?.validate();
+    const ContactDetail c = ContactDetail('name', 'phoneNumber');
+    const ListContact list = ListContact([c]);
+    print(c);
 
     if (isValid != null && isValid) {
       final entity = PartyCompanion(
-        partyName: drift.Value(_nameController.text),
-        desc: drift.Value(_descController.text),
-        location: drift.Value(_locationController.text),
-        date: drift.Value(_date!),
-      );
+          partyName: drift.Value(_nameController.text),
+          desc: drift.Value(_descController.text),
+          location: drift.Value(_locationController.text),
+          date: drift.Value(_date!),
+          contacts: const drift.Value(list));
 
       _db.insertParty(entity);
 

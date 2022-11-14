@@ -13,7 +13,7 @@ class PartyData extends DataClass implements Insertable<PartyData> {
   final String desc;
   final String location;
   final DateTime date;
-  final ContactDetail? contacts;
+  final ListContact? contacts;
   const PartyData(
       {required this.id,
       required this.partyName,
@@ -58,7 +58,7 @@ class PartyData extends DataClass implements Insertable<PartyData> {
       desc: serializer.fromJson<String>(json['desc']),
       location: serializer.fromJson<String>(json['location']),
       date: serializer.fromJson<DateTime>(json['date']),
-      contacts: serializer.fromJson<ContactDetail?>(json['contacts']),
+      contacts: serializer.fromJson<ListContact?>(json['contacts']),
     );
   }
   @override
@@ -70,7 +70,7 @@ class PartyData extends DataClass implements Insertable<PartyData> {
       'desc': serializer.toJson<String>(desc),
       'location': serializer.toJson<String>(location),
       'date': serializer.toJson<DateTime>(date),
-      'contacts': serializer.toJson<ContactDetail?>(contacts),
+      'contacts': serializer.toJson<ListContact?>(contacts),
     };
   }
 
@@ -80,7 +80,7 @@ class PartyData extends DataClass implements Insertable<PartyData> {
           String? desc,
           String? location,
           DateTime? date,
-          Value<ContactDetail?> contacts = const Value.absent()}) =>
+          Value<ListContact?> contacts = const Value.absent()}) =>
       PartyData(
         id: id ?? this.id,
         partyName: partyName ?? this.partyName,
@@ -123,7 +123,7 @@ class PartyCompanion extends UpdateCompanion<PartyData> {
   final Value<String> desc;
   final Value<String> location;
   final Value<DateTime> date;
-  final Value<ContactDetail?> contacts;
+  final Value<ListContact?> contacts;
   const PartyCompanion({
     this.id = const Value.absent(),
     this.partyName = const Value.absent(),
@@ -167,7 +167,7 @@ class PartyCompanion extends UpdateCompanion<PartyData> {
       Value<String>? desc,
       Value<String>? location,
       Value<DateTime>? date,
-      Value<ContactDetail?>? contacts}) {
+      Value<ListContact?>? contacts}) {
     return PartyCompanion(
       id: id ?? this.id,
       partyName: partyName ?? this.partyName,
@@ -251,10 +251,10 @@ class $PartyTable extends Party with TableInfo<$PartyTable, PartyData> {
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
   final VerificationMeta _contactsMeta = const VerificationMeta('contacts');
   @override
-  late final GeneratedColumnWithTypeConverter<ContactDetail?, String> contacts =
+  late final GeneratedColumnWithTypeConverter<ListContact?, String> contacts =
       GeneratedColumn<String>('contacts', aliasedName, true,
               type: DriftSqlType.string, requiredDuringInsert: false)
-          .withConverter<ContactDetail?>($PartyTable.$converter0n);
+          .withConverter<ListContact?>($PartyTable.$converter0n);
   @override
   List<GeneratedColumn> get $columns =>
       [id, partyName, desc, location, date, contacts];
@@ -324,9 +324,9 @@ class $PartyTable extends Party with TableInfo<$PartyTable, PartyData> {
     return $PartyTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<ContactDetail, String> $converter0 =
+  static TypeConverter<ListContact, String> $converter0 =
       const ContactConverter();
-  static TypeConverter<ContactDetail?, String?> $converter0n =
+  static TypeConverter<ListContact?, String?> $converter0n =
       NullAwareTypeConverter.wrap($converter0);
 }
 
@@ -354,4 +354,15 @@ Map<String, dynamic> _$ContactDetailToJson(ContactDetail instance) =>
     <String, dynamic>{
       'name': instance.name,
       'phoneNumber': instance.phoneNumber,
+    };
+
+ListContact _$ListContactFromJson(Map<String, dynamic> json) => ListContact(
+      (json['listContact'] as List<dynamic>)
+          .map((e) => ContactDetail.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$ListContactToJson(ListContact instance) =>
+    <String, dynamic>{
+      'listContact': instance.listContact,
     };

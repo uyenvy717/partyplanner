@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:partyplanflutter/data/db/app_db.dart';
 import 'package:partyplanflutter/screens/contact_list.dart';
 import 'package:partyplanflutter/screens/events_add_widget.dart';
 import 'package:partyplanflutter/screens/events_detail.dart';
 import 'package:partyplanflutter/screens/events_edit_widget.dart';
 import 'package:partyplanflutter/screens/expired_party.dart';
-import 'package:partyplanflutter/screens/upcomming_party.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -33,8 +33,12 @@ class RouteGenerator {
           );
         }
         return _errorRoute();
-      // case '/contact_list':
-      //   return MaterialPageRoute(builder: (_) => const ContactList());
+      case '/contact_list':
+        final contactArgs = settings.arguments as ContactArguments;
+        return MaterialPageRoute(
+            builder: (_) => ContactList(
+                  args: contactArgs,
+                ));
       default:
         return _errorRoute();
     }
@@ -59,4 +63,12 @@ class RouteGenerator {
       );
     });
   }
+}
+
+class ContactArguments {
+  late final List<ContactDetail> contacts;
+  final int id;
+  ValueNotifier<bool> notifier;
+
+  ContactArguments(this.contacts, this.id, this.notifier);
 }

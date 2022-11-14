@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:partyplanflutter/data/db/app_db.dart';
+import 'package:partyplanflutter/route/route_generator.dart';
 import 'package:partyplanflutter/utils/app_layout.dart';
 import 'package:partyplanflutter/widgets/icon_button_widget.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -19,10 +20,12 @@ class EventsDetail extends StatefulWidget {
 
 class _EventsDetailState extends State<EventsDetail> {
   List avaImages = ['images/ava.jpeg', 'images/ava.jpeg', 'images/ava.jpeg'];
+  final ValueNotifier<bool> _notifier = ValueNotifier(false);
 
   late AppDb _db;
   late PartyData _partyData;
   late String _name, _desc, _location, _date, _time;
+  late ListContact _listContact;
 
   @override
   void initState() {
@@ -33,6 +36,7 @@ class _EventsDetailState extends State<EventsDetail> {
 
   @override
   void dispose() {
+    _notifier.dispose();
     _db.close();
     super.dispose();
   }
@@ -92,16 +96,29 @@ class _EventsDetailState extends State<EventsDetail> {
                                 ),
                               ),
                             Gap(AppLayout.getWidth(20)),
-                            const Text(
-                              '7+ going',
-                              style: TextStyle(
-                                fontSize: 15,
-                              ),
-                            ),
-                            Gap(AppLayout.getWidth(10)),
-                            const Icon(
-                              Icons.arrow_forward_rounded,
-                              size: 15,
+
+                            ValueListenableBuilder(
+                                valueListenable: _notifier,
+                                builder: (context, bool val, Widget? child) {
+                                  return Text(
+                                    '${_listContact.listContact.length} going',
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                    ),
+                                  );
+                                }),
+
+                            // Gap(AppLayout.getWidth(5)),
+                            IconButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/contact_list',
+                                    arguments: ContactArguments(
+                                        _listContact.listContact,
+                                        widget.id,
+                                        _notifier));
+                              },
+                              iconSize: 15,
+                              icon: const Icon(Icons.arrow_forward_rounded),
                             ),
                           ],
                         ),
@@ -255,10 +272,18 @@ class _EventsDetailState extends State<EventsDetail> {
 
   Future<void> getParty() async {
     _partyData = await _db.getParty(widget.id);
+    print(_partyData.contacts?.listContact.length);
     setState(() {
       _name = _partyData.partyName;
       _desc = _partyData.desc;
       _location = _partyData.location;
+      if (_partyData.contacts == null) {
+        List<ContactDetail> list = [];
+        ListContact contacts = ListContact(list);
+        _listContact = contacts;
+      } else {
+        _listContact = _partyData.contacts!;
+      }
       _date =
           '${DateFormat.EEEE('en_US').format(_partyData.date)}, ${DateFormat.yMMMMd('en_US').format(_partyData.date)}';
       _time = DateFormat('h:mm a').format(_partyData.date);
@@ -299,9 +324,6 @@ class _EventsDetailState extends State<EventsDetail> {
       body: 'Email body',
       subject: 'Email subject',
       recipients: ['zyzyvy710@gmail.com'],
-      // cc: ['cc@example.com'],
-      // bcc: ['bcc@example.com'],
-      // attachmentPaths: ['/path/to/attachment.zip'],
       isHTML: false,
     );
 

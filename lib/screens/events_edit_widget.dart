@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:partyplanflutter/data/db/app_db.dart';
+import 'package:partyplanflutter/route/route_generator.dart';
 import 'package:partyplanflutter/screens/contact_list.dart';
 import 'package:partyplanflutter/utils/app_layout.dart';
 import 'package:partyplanflutter/widgets/custom_date_picker_form_field.dart';
@@ -26,7 +27,7 @@ class _EventsEditState extends State<EventsEdit> {
   final TextEditingController _descController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  List<ContactDetail> contacts = [];
+  late ListContact _listContact;
   DateTime? _date;
 
   @override
@@ -90,49 +91,50 @@ class _EventsEditState extends State<EventsEdit> {
                       }),
                     ),
                     Gap(AppLayout.getHeight(8)),
-                    IconButton(
-                      onPressed: () {
-                        // Navigator.pushNamed(context, '/contact_list', arguments: );
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ContactList(
-                                    contacts: contacts,
-                                    id: widget.id,
-                                    updateContact:
-                                        (List<ContactDetail> newContacts) {
-                                      updateContacts(newContacts);
-                                    })));
-                      },
-                      icon: const Icon(Icons.outgoing_mail),
-                    ),
+                    // IconButton(
+                    //   onPressed: () {
+                    //     Navigator.pushNamed(context, '/contact_list', arguments: ContactArguments(contacts, widget.id,));
+                    //     Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //             builder: (context) => ContactList(
+
+                    //                 contacts: contacts,
+                    //                 id: widget.id,
+                    //                 updateContact:
+                    //                     (List<ContactDetail> newContacts) {
+                    //                   updateContacts(newContacts);
+                    //                 })));
+                    //   },
+                    //   icon: const Icon(Icons.outgoing_mail),
+                    // ),
                   ],
                 ),
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: contacts.length,
-                itemBuilder: (context, index) {
-                  final contact = contacts[index];
-                  return Column(children: [
-                    ListTile(
-                      leading: const CircleAvatar(
-                        radius: 20,
-                        child: Icon(Icons.person),
-                      ),
-                      title: Text(contact.name),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(contact.phoneNumber),
-                        ],
-                      ),
-                    ),
-                    const Divider()
-                  ]);
-                },
-              )
+              // ListView.builder(
+              //   shrinkWrap: true,
+              //   physics: const NeverScrollableScrollPhysics(),
+              //   itemCount: contacts.length,
+              //   itemBuilder: (context, index) {
+              //     final contact = contacts[index];
+              //     return Column(children: [
+              //       ListTile(
+              //         leading: const CircleAvatar(
+              //           radius: 20,
+              //           child: Icon(Icons.person),
+              //         ),
+              //         title: Text(contact.name),
+              //         subtitle: Column(
+              //           crossAxisAlignment: CrossAxisAlignment.start,
+              //           children: [
+              //             Text(contact.phoneNumber),
+              //           ],
+              //         ),
+              //       ),
+              //       const Divider()
+              //     ]);
+              //   },
+              // )
             ],
           ),
         ),
@@ -217,14 +219,21 @@ class _EventsEditState extends State<EventsEdit> {
     _nameController.text = _partyData.partyName;
     _descController.text = _partyData.desc;
     _locationController.text = _partyData.location;
+    if (_partyData.contacts == null) {
+      // List<ContactDetail> list = [];
+      // ListContact contacts = ListContact(list);
+      _listContact = [] as ListContact;
+    } else {
+      _listContact = _partyData.contacts!;
+    }
     _dateController.text =
         DateFormat('dd/MM/yyyy HH:mm').format(_partyData.date);
   }
 
-  void updateContacts(List<ContactDetail> newContacts) {
-    setState(() {
-      contacts = newContacts;
-    });
-    // print(contacts);
-  }
+  // void updateContacts(List<ContactDetail> newContacts) {
+  //   setState(() {
+  //     contacts = newContacts;
+  //   });
+  //   // print(contacts);
+  // }
 }

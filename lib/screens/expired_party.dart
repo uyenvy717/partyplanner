@@ -134,6 +134,7 @@ class _ExpiredPartyState extends State<ExpiredParty> {
                                 onTap: () {
                                   Navigator.pushNamed(context, '/party_detail',
                                       arguments: party.id);
+                                  print(party.id);
                                 },
                                 child: EventsCard(
                                   name: party.partyName.toString(),

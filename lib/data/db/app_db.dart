@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:fast_contacts/fast_contacts.dart';
 import 'package:partyplanflutter/data/entity/party_entity.dart';
 import 'package:json_annotation/json_annotation.dart' as j;
 import 'package:path_provider/path_provider.dart';
@@ -47,9 +46,10 @@ class AppDb extends _$AppDb {
     return await (delete(party)..where((tbl) => tbl.id.equals(id))).go();
   }
 
-  // Future<List<ContactDetail>> updateGuest(List<ContactDetail> contacts, int id) async {
-  //   return await (update(party)..where((tbl) => tbl.id.equals(id))).write(PartyCompanion())
-  // }
+  Future updateGuest(ListContact listContacts, int id) async {
+    return await (update(party)..where((tbl) => tbl.id.equals(id)))
+        .write(PartyCompanion(contacts: Value(listContacts)));
+  }
 }
 
 @j.JsonSerializable()
@@ -59,21 +59,34 @@ class ContactDetail {
 
   const ContactDetail(this.name, this.phoneNumber);
 
-  factory ContactDetail.fromJson(Map<String, dynamic> json) => _$ContactDetailFromJson(json);
+  factory ContactDetail.fromJson(Map<String, dynamic> json) =>
+      _$ContactDetailFromJson(json);
 
   Map<String, dynamic> toJson() => _$ContactDetailToJson(this);
 }
 
-class ContactConverter extends TypeConverter<ContactDetail, String> {
+@j.JsonSerializable()
+class ListContact {
+  final List<ContactDetail> listContact;
+
+  const ListContact(this.listContact);
+
+  factory ListContact.fromJson(Map<String, dynamic> json) =>
+      _$ListContactFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ListContactToJson(this);
+}
+
+class ContactConverter extends TypeConverter<ListContact, String> {
   const ContactConverter();
 
   @override
-  ContactDetail fromSql(String fromDb) {
-    return ContactDetail.fromJson(json.decode(fromDb) as Map<String, dynamic>);
+  ListContact fromSql(String fromDb) {
+    return ListContact.fromJson(json.decode(fromDb) as Map<String, dynamic>);
   }
 
   @override
-  String toSql(ContactDetail value){
+  String toSql(ListContact value) {
     return json.encode(value.toJson());
   }
 }
